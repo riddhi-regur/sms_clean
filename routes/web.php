@@ -14,6 +14,7 @@ Route::get('/', function () {
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [LayoutController::class, 'index'])->name('dashboard'); 
     Route::get('/classroom', [ClassroomController::class, 'index'])->name('classroom');
+     Route::get('/classroom/data', [ClassroomController::class, 'data'])->name('classroom.data');
     Route::get('/department', [DepartmentController::class, 'index'])->name('department');
     Route::get('/department/data', [DepartmentController::class, 'data'])->name('department.data');
     Route::get('/course', [CourseController::class, 'index'])->name('course');

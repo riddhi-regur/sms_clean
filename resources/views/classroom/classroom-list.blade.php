@@ -10,20 +10,9 @@
         </a>
     @endif
 </div>
-{{-- <form method="GET" class="flex gap-2">
-    <input
-        type="text"
-        name="search"
-        placeholder="Search..."
-        class="border p-2 rounded w-64"
-    />
-
-    <button class="bg-blue-500 text-white px-4 rounded">Search</button>
-</form>
-<div class="mt-4">{{ $classroom->links() }}</div> --}}
-<div class="bg-white shadow rounded-lg overflow-hidden">
-    <table class="w-full text-left">
-        <thead class="bg-gray-200">
+<div class="bg-white shadow rounded-lg overflow-hidden py-3 ">
+    <table id="classroom-table" class="w-full text-left py-3">
+     <thead class="bg-gray-200">
             <tr>
                 <th class="p-3">Name</th>
                 <th class="p-3">Section</th>
@@ -31,40 +20,35 @@
                 <th class="p-3">Course</th>
                 <th class="p-3">Department</th>
                 <th class="p-3">Actions</th>
-            </tr>
+             </tr>
         </thead>
+        
+</table>
 
-        <tbody>
-            @foreach ($classroom as $classroom)
-                <tr class="border-t hover:bg-gray-50">
-                    <td class="p-3">{{ $classroom->name }}</td>
-                    <td class="p-3">{{ $classroom->section }}</td>
-                    <td class="p-3">{{ $classroom->year }}</td>
-                    <td class="p-3">{{ $classroom->course->name }}</td>
-                    <td class="p-3">{{ $classroom->department->name }}</td>
-                    <td class="p-3 flex gap-2">
-                        <a
-                            href="/classroom/{{ $classroom->id }}/edit"
-                            class="bg-yellow-400 px-3 py-1 rounded text-sm"
-                        >
-                            Edit
-                        </a>
+<!-- Tailwind -->
+<script src="https://cdn.tailwindcss.com"></script>
 
-                        <form
-                            action="/classroom/{{ $classroom->id }}"
-                            method="POST"
-                        >
-                            @csrf
-                            @method ('DELETE')
-                            <button
-                                class="bg-red-500 text-white px-3 py-1 rounded text-sm"
-                            >
-                                Delete
-                            </button>
-                        </form>
-                    </td>
-                </tr>
-            @endforeach
-        </tbody>
-    </table>
+<!-- jQuery + DataTables -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
+<script>
+$(function () {
+    $('#classroom-table').DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: "{{ route('classroom.data') }}",
+        columns: [
+            { data: 'name', name: 'name' },
+            { data: 'section', name: 'section' },
+            { data: 'year', name: 'year' },
+            { data: 'course', name: 'course.name' },
+             { data: 'department', name: 'department.name' },
+                { data: 'action', name: 'action', orderable: false, searchable: false }
+        ]
+    });
+});
+</script>
+
 </div>

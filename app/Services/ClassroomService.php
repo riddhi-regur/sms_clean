@@ -8,7 +8,8 @@ class ClassroomService
 {
     public function getAllClassrooms()
     {
-        $classroom = Classroom::with('department','course')->get();
+        $classroom = Classroom::select(['id','name', 'section', 'department_id' ,'year','course_id'])  ->with('department:id,name','course:id,name')
+    ->get();
          return $classroom;
     }
 }
