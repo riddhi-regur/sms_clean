@@ -29,11 +29,14 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
-     protected $fillable = [ 'email', 'password', 'role_id'];
+
+    protected $fillable = ['email', 'password', 'role_id'];
+
     public function role()
     {
         return $this->belongsTo(Role::class);
     }
+
     public function isAdmin()
     {
         return $this->role->name === 'admin';
