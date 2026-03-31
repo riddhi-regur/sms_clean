@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreDepartmentRequest;
-use App\Http\Requests\UpdateDepartmentRequest;
 use App\Models\Department;
 use App\Services\DepartmentService;
 use Illuminate\Http\Request;
@@ -35,7 +34,7 @@ class DepartmentController extends Controller
         $query = $this->departmentService->getAllDepartments();
 
         return DataTables::of($query)->addColumn('action', function ($row) {
-    return '
+            return '
         <a href="'.route('department.edit', $row->id).'" 
            class="bg-yellow-400 px-3 py-1 rounded text-sm">Edit</a>
 
@@ -50,37 +49,41 @@ class DepartmentController extends Controller
             </button>
         </form>
     ';
-})
-->rawColumns(['action'])
+        })
+            ->rawColumns(['action'])
             ->addIndexColumn()
             ->make(true);
     }
 
     public function store(StoreDepartmentRequest $request)
-    { 
+    {
         $this->departmentService->createDepartment($request->validated());
 
-         return  redirect('/department')->with('success', 'department added successfully!');
+        return redirect('/department')->with('success', 'department added successfully!');
     }
+
     public function edit($id)
-{
-    $department= Department::findOrFail($id);
-    return view('department.form', compact('department'));
-}
-public function update(StoreDepartmentRequest $request, $id)
-{
-    $this->departmentService->updateDepartment($id, $request->all());
+    {
+        $department = Department::findOrFail($id);
 
-    return redirect()
-        ->route('department.index')
-        ->with('success', 'Updated successfully');
-}
-public function destroy($id)
-{
-    $this->departmentService->deleteDepartment($id);
+        return view('department.form', compact('department'));
+    }
 
-    return redirect()
-        ->route('department.index')
-        ->with('success', 'Deleted successfully');
-}
+    public function update(StoreDepartmentRequest $request, $id)
+    {
+        $this->departmentService->updateDepartment($id, $request->all());
+
+        return redirect()
+            ->route('department.index')
+            ->with('success', 'Updated successfully');
+    }
+
+    public function destroy($id)
+    {
+        $this->departmentService->deleteDepartment($id);
+
+        return redirect()
+            ->route('department.index')
+            ->with('success', 'Deleted successfully');
+    }
 }

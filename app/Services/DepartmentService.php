@@ -19,10 +19,11 @@ class DepartmentService
         $department->code = $data['code'];
         $department->description = $data['description'] ?? null;
 
-        $department->save(); 
+        $department->save();
 
         return $department;
     }
+
     public function updateDepartment($id, $data)
     {
         $department = Department::findOrFail($id);
@@ -30,7 +31,9 @@ class DepartmentService
         $department->update($data);
 
         return $department;
-    }public function deleteDepartment($id)
+    }
+
+    public function deleteDepartment($id)
     {
         $department = Department::findOrFail($id);
 
