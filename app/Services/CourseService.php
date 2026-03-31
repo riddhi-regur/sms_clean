@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Course;
+use Illuminate\Database\QueryException;
 
 class CourseService
 {
@@ -40,10 +41,13 @@ class CourseService
 
     public function deleteCourse($id)
     {
-        $course = Course::findOrFail($id);
+        try{ $course = Course::findOrFail($id);
 
-        $course->delete();
-
-        return true;
+        $course->delete();}catch(QueryException $e){
+            // Foreign key restrict error
+            throw new \Exception("Cannot delete this course because it has assigned.");
+        } catch (\Exception $e) {
+            throw new \Exception($e->getMessage());
+        }
     }
 }

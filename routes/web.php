@@ -14,8 +14,9 @@ Route::get('/', function () {
 
 Route::middleware(['auth', 'role:'.Role::ADMIN])->group(function () {
     Route::get('/dashboard', [LayoutController::class, 'index'])->name('dashboard');
-    Route::get('/classroom', [ClassroomController::class, 'index'])->name('classroom');
+    
     Route::get('/classroom/data', [ClassroomController::class, 'data'])->name('classroom.data');
+      Route::resource('classroom', ClassroomController::class);
 
     Route::get('/department/data', [DepartmentController::class, 'data'])->name('department.data');
     Route::resource('department', DepartmentController::class);

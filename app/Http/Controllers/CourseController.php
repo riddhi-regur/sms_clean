@@ -85,11 +85,15 @@ class CourseController extends Controller
     }
 
     public function destroy($id)
-    {
+    {  try {
         $this->courseService->deleteCourse($id);
 
         return redirect()
             ->route('course.index')
-            ->with('success', 'Deleted successfully');
+            ->with('success', 'Deleted successfully'); } catch (\Exception $e) {
+            return redirect()
+                ->route('course.index')
+                ->with('error', $e->getMessage());
+        }
     }
 }
