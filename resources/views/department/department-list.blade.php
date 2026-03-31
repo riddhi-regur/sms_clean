@@ -10,20 +10,10 @@
         </a>
     @endif
 </div>
-{{-- <form method="GET" class="flex gap-2">
-    <input
-        type="text"
-        name="search"
-        placeholder="Search..."
-        class="border p-2 rounded w-64"
-    />
 
-    <button class="bg-blue-500 text-white px-4 rounded">Search</button>
-</form>
-<div class="mt-4">{{ $department->links() }}</div> --}}
-<div class="bg-white shadow rounded-lg overflow-hidden">
-    <table class="w-full text-left">
-        <thead class="bg-gray-200">
+<div class="bg-white shadow rounded-lg overflow-hidden py-3 ">
+    <table id="department-table" class="w-full text-left py-3">
+     <thead class="bg-gray-200">
             <tr>
                 <th class="p-3">Name</th>
                 <th class="p-3">Code</th>
@@ -32,35 +22,32 @@
             </tr>
         </thead>
 
-        <tbody>
-            @foreach ($department as $department)
-                <tr class="border-t hover:bg-gray-50">
-                    <td class="p-3">{{ $department->name }}</td>
-                    <td class="p-3">{{ $department->code }}</td>
-                    <td class="p-3">{{ $department->description }}</td>
-                    <td class="p-3 flex gap-2">
-                        <a
-                            href="/department/{{ $department->id }}/edit"
-                            class="bg-yellow-400 px-3 py-1 rounded text-sm"
-                        >
-                            Edit
-                        </a>
+       </thead>
+        
+</table>
 
-                        <form
-                            action="/department/{{ $department->id }}"
-                            method="POST"
-                        >
-                            @csrf
-                            @method ('DELETE')
-                            <button
-                                class="bg-red-500 text-white px-3 py-1 rounded text-sm"
-                            >
-                                Delete
-                            </button>
-                        </form>
-                    </td>
-                </tr>
-            @endforeach
-        </tbody>
-    </table>
+<!-- Tailwind -->
+<script src="https://cdn.tailwindcss.com"></script>
+
+<!-- jQuery + DataTables -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
+<script>
+$(function () {
+    $('#department-table').DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: "{{ route('department.data') }}",
+        columns: [
+            { data: 'name', name: 'name' },
+            { data: 'code', name: 'code' },
+              { data: 'description', name: 'description' },
+                { data: 'action', name: 'action', orderable: false, searchable: false }
+        ]
+    });
+});
+</script>
+
 </div>

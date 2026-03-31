@@ -8,7 +8,6 @@ class DepartmentService
 {
     public function getAllDepartments()
     {
-        $department = Department::get();
-         return $department;
+         return Department::select(['id', 'name', 'code', 'description']);
     }
 }

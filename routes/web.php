@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ClassroomController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\LayoutController;
@@ -12,8 +13,11 @@ Route::get('/', function () {
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [LayoutController::class, 'index'])->name('dashboard'); 
+    Route::get('/classroom', [ClassroomController::class, 'index'])->name('classroom');
     Route::get('/department', [DepartmentController::class, 'index'])->name('department');
+    Route::get('/department/data', [DepartmentController::class, 'data'])->name('department.data');
     Route::get('/course', [CourseController::class, 'index'])->name('course');
+    Route::get('/course/data', [CourseController::class, 'data'])->name('course.data');
 });
 
 

@@ -10,7 +10,7 @@
         </a>
     @endif
 </div>
-<form method="GET" class="flex gap-2">
+{{-- <form method="GET" class="flex gap-2">
     <input
         type="text"
         name="search"
@@ -20,7 +20,7 @@
 
     <button class="bg-blue-500 text-white px-4 rounded">Search</button>
 </form>
-<div class="mt-4">{{ $classroom->links() }}</div>
+<div class="mt-4">{{ $classroom->links() }}</div> --}}
 <div class="bg-white shadow rounded-lg overflow-hidden">
     <table class="w-full text-left">
         <thead class="bg-gray-200">

@@ -7,6 +7,7 @@
         type="image/png"
         href="{{ asset('images/favicon.png') }}"
     />
+     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
     @vite ('resources/css/app.css')
 </head>
 <body class="bg-gray-50 font-sans">
