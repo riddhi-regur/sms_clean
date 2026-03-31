@@ -3,7 +3,7 @@
 
     @if (Auth::user()->isAdmin())
         <a
-            href="/{{ auth()->user()->getRoutePrefix() }}/user/create"
+            href="/user/create"
             class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
         >
             + Add user
@@ -51,14 +51,14 @@
                     </td>
                     <td class="p-3 flex gap-2">
                         <a
-                            href="/{{ auth()->user()->getRoutePrefix() }}/user/{{ $student->id }}/edit"
+                            href="/user/{{ $student->id }}/edit"
                             class="bg-yellow-400 px-3 py-1 rounded text-sm"
                         >
                             Edit
                         </a>
 
                         <form
-                            action="/{{ auth()->user()->getRoutePrefix() }}/user/{{ $student->id }}"
+                            action="/user/{{ $student->id }}"
                             method="POST"
                         >
                             @csrf

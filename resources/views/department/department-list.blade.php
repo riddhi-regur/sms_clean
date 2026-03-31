@@ -3,14 +3,14 @@
 
     @if (Auth::user()->isAdmin())
         <a
-            href="/{{ auth()->user()->getRoutePrefix() }}/department/create"
+            href="/department/create"
             class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
         >
             + Add Department
         </a>
     @endif
 </div>
-<form method="GET" class="flex gap-2">
+{{-- <form method="GET" class="flex gap-2">
     <input
         type="text"
         name="search"
@@ -20,7 +20,7 @@
 
     <button class="bg-blue-500 text-white px-4 rounded">Search</button>
 </form>
-<div class="mt-4">{{ $department->links() }}</div>
+<div class="mt-4">{{ $department->links() }}</div> --}}
 <div class="bg-white shadow rounded-lg overflow-hidden">
     <table class="w-full text-left">
         <thead class="bg-gray-200">
@@ -40,14 +40,14 @@
                     <td class="p-3">{{ $department->description }}</td>
                     <td class="p-3 flex gap-2">
                         <a
-                            href="/{{ auth()->user()->getRoutePrefix() }}/department/{{ $department->id }}/edit"
+                            href="/department/{{ $department->id }}/edit"
                             class="bg-yellow-400 px-3 py-1 rounded text-sm"
                         >
                             Edit
                         </a>
 
                         <form
-                            action="/{{ auth()->user()->getRoutePrefix() }}/department/{{ $department->id }}"
+                            action="/department/{{ $department->id }}"
                             method="POST"
                         >
                             @csrf

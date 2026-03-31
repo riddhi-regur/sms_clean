@@ -12,7 +12,7 @@
 <body class="bg-gray-50 font-sans">
     <!-- Sidebar -->
     <aside
-        class="bg-gray-800 w-2xs fixed left-0 top-0 flex h-full items-center p-5 flex-col"
+        class="bg-gray-800 w-72 fixed left-0 top-0 flex h-full items-center p-5 flex-col"
     >
         @include ('layouts.sidebar')
     </aside>
@@ -21,13 +21,13 @@
     <section class="pl-72">
         <!-- Topbar -->
         <header
-            class="bg-white shadow-2xs w-full p-5 h-15 flex items-center fixed"
+            class="bg-white shadow-2xs w-full p-1 flex items-center fixed"
         >
             @include ('layouts.header')
         </header>
 
-        <main class="px-6 flex flex-col gap-3 py-20">
-            @yield ('content')
+        <main class="px-3 flex flex-col gap-3 py-20">
+             @include ('layouts.dashboard')
         </main>
     </section>
 </body>

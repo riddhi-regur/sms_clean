@@ -3,14 +3,14 @@
 
     @if (Auth::user()->isAdmin())
         <a
-            href="/{{ auth()->user()->getRoutePrefix() }}/course/create"
+            href="/course/create"
             class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
         >
             + Add Course
         </a>
     @endif
 </div>
-<form method="GET" class="flex gap-2">
+{{-- <form method="GET" class="flex gap-2">
     <input
         type="text"
         name="search"
@@ -19,7 +19,7 @@
     />
 
     <button class="bg-blue-500 text-white px-4 rounded">Search</button>
-</form>
+</form> --}}
 {{-- <div class="mt-4">{{ $course->links() }}</div> --}}
 <div class="bg-white shadow rounded-lg overflow-hidden">
     <table class="w-full text-left">
@@ -46,14 +46,14 @@
                     <td class="p-3">{{ $course->description }}</td>
                     <td class="p-3 flex gap-2">
                         <a
-                            href="/{{ auth()->user()->getRoutePrefix() }}/course/{{ $course->id }}/edit"
+                            href="/course/{{ $course->id }}/edit"
                             class="bg-yellow-400 px-3 py-1 rounded text-sm"
                         >
                             Edit
                         </a>
 
                         <form
-                            action="/{{ auth()->user()->getRoutePrefix() }}/course/{{ $course->id }}"
+                            action="/course/{{ $course->id }}"
                             method="POST"
                         >
                             @csrf

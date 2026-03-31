@@ -3,7 +3,7 @@
     <img
         src="{{ asset('images/university.jpg') }}"
         alt=""
-        class="rounded-full size-15"
+        class="rounded-full size-16"
     />
     <h2 class="text-base font-medium">Shree Ganesh Vidhyamandir</h2>
 </div>
@@ -52,7 +52,7 @@
                 <div class="flex gap-3 items-center justify-center">
                     <form
                         method="GET"
-                        action="{{ route(auth()->user()->getRoutePrefix() .'.user.edit',  auth()->user()->id) }}"
+                        {{-- action="{{ route('user.edit',  auth()->user()->id) }}" --}}
                     >
                         @csrf
                         <button
@@ -66,7 +66,9 @@
                             Profile
                         </button>
                     </form>
-                    <form method="GET" action="{{ route('password.edit') }}">
+                    <form method="GET" 
+                    {{-- action="{{ route('password.edit') }}" --}}
+                    >
                         @csrf
                         <button
                             class="bg-blue-500 w-full text-white font-medium px-4 py-2 hover:bg-blue-600 cursor-pointer rounded-sm flex gap-2 justify-center items-center"

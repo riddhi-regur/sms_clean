@@ -4,7 +4,7 @@
         alt="Dashboard logo"
         class="size-10"
     />
-    <a href="/{{ auth()->user()->getRoutePrefix() }}/dashboard">
+    <a href="/dashboard">
         <h1 class="text-3xl text-white">Dashboard</h1></a
     >
 </div>
@@ -16,7 +16,7 @@
             alt="User Image"
             class="size-5"
         />
-        <a href="/{{ auth()->user()->getRoutePrefix() }}/user"
+        <a href="/user"
             ><h4 class="text-white text-base">Users</h4></a
         >
     </li>
@@ -26,7 +26,7 @@
             alt="Student Image"
             class="size-5"
         />
-        <a href="/{{ auth()->user()->getRoutePrefix() }}/students"
+        <a href="/students"
             ><h4 class="text-white text-base">Students</h4></a
         >
     </li>
@@ -36,7 +36,7 @@
             alt="Teacher Image"
             class="size-5"
         />
-        <a href="/{{ auth()->user()->getRoutePrefix() }}/faculty"
+        <a href="/faculty"
             ><h4 class="text-white text-base">Faculty</h4></a
         >
     </li>
@@ -46,7 +46,7 @@
             alt="Dashboard logo"
             class="size-5"
         />
-        <a href="/{{ auth()->user()->getRoutePrefix() }}/classroom">
+        <a href="/classroom">
             <h4 class="text-white text-base">Classroom</h4>
         </a>
     </li>
@@ -57,7 +57,7 @@
             alt="User Image"
             class="size-5"
         />
-        <a href="/{{ auth()->user()->getRoutePrefix() }}/department"
+        <a href="/department"
             ><h4 class="text-white text-base">Department</h4></a
         >
     </li>
@@ -67,7 +67,7 @@
             alt="Certificate Image"
             class="size-5"
         />
-        <a href="/{{ auth()->user()->getRoutePrefix() }}/course"
+        <a href="/course"
             ><h4 class="text-white text-base">Courses</h4></a
         >
     </li>
