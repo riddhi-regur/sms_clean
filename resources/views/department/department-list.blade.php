@@ -3,7 +3,7 @@
 
     @if (Auth::user()->isAdmin())
         <a
-            href="{{ route('department.data') }}"
+            href="{{ route('department.create') }}"
             class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
         >
             + Add Department
