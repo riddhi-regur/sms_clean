@@ -3,12 +3,13 @@
 namespace App\Services;
 
 use App\Models\Department;
+use Illuminate\Database\QueryException;
 
 class DepartmentService
 {
     public function getAllDepartments()
     {
-        return Department::select(['id', 'name', 'code', 'description']);
+        return Department::select(['id', 'name', 'code', 'description'])->get();
     }
 
     public function createDepartment(array $data)
@@ -35,10 +36,14 @@ class DepartmentService
 
     public function deleteDepartment($id)
     {
-        $department = Department::findOrFail($id);
-
-        $department->delete();
-
-        return true;
+       try {
+            $department = Department::findOrFail($id);
+            $department->delete();
+        } catch (QueryException $e) {
+            // Foreign key restrict error
+            throw new \Exception("Cannot delete this department because it has assigned courses.");
+        } catch (\Exception $e) {
+            throw new \Exception($e->getMessage());
+        }
     }
 }

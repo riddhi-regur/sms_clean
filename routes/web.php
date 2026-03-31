@@ -20,8 +20,8 @@ Route::middleware(['auth', 'role:'.Role::ADMIN])->group(function () {
     Route::get('/department/data', [DepartmentController::class, 'data'])->name('department.data');
     Route::resource('department', DepartmentController::class);
 
-    Route::get('/course', [CourseController::class, 'index'])->name('course');
     Route::get('/course/data', [CourseController::class, 'data'])->name('course.data');
+    Route::resource('course', CourseController::class);
 });
 
 Route::middleware('auth')->group(function () {
