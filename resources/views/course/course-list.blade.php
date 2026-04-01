@@ -1,6 +1,12 @@
 <div class="flex justify-between items-center">
     <h1 class="text-2xl font-semibold">Course</h1>
+@if(session('success'))
+    <div class="alert alert-success">{{ session('success') }}</div>
+@endif
 
+@if(session('error'))
+    <div class="alert alert-danger">{{ session('error') }}</div>
+@endif
     @if (Auth::user()->isAdmin())
         <a
             href="{{ route('course.create') }}"
