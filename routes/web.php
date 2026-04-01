@@ -5,6 +5,7 @@ use App\Http\Controllers\CourseController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\LayoutController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\StudentController;
 use App\Models\Role;
 use Illuminate\Support\Facades\Route;
 
@@ -23,6 +24,9 @@ Route::middleware(['auth', 'role:'.Role::ADMIN])->group(function () {
 
     Route::get('/course/data', [CourseController::class, 'data'])->name('course.data');
     Route::resource('course', CourseController::class);
+
+    Route::get('/student/data', [StudentController::class, 'data'])->name('student.data');
+    Route::resource('student', StudentController::class);
 });
 
 Route::middleware('auth')->group(function () {

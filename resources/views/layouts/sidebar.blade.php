@@ -9,7 +9,7 @@
     >
 </div>
 <ul class="flex flex-col gap-5 py-5">
-    <li class="flex gap-4">
+    {{-- <li class="flex gap-4">
         <img
             src="
             {{ asset('images/user.png') }}"
@@ -19,14 +19,14 @@
         <a href="/user"
             ><h4 class="text-white text-base">Users</h4></a
         >
-    </li>
+    </li> --}}
     <li class="flex gap-4">
         <img
             src="{{ asset('images/study.png') }}"
             alt="Student Image"
             class="size-5"
         />
-        <a href="/students"
+        <a href="/student"
             ><h4 class="text-white text-base">Students</h4></a
         >
     </li>

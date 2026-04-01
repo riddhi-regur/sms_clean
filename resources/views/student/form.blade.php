@@ -2,8 +2,15 @@
 
 @section ('content')
     <h1 class="text-2xl font-semibold mb-6">Add Student</h1>
+    @if ($errors->any())
+    <div>
+        @foreach ($errors->all() as $error)
+            <p>{{ $error }}</p>
+        @endforeach
+    </div>
+@endif
     <form
-        action="{{ isset($student) ? route('students.update', $student->id) : route('students.store') }}"
+        action="{{ isset($student) ? route('student.update', $student->id) : route('student.store') }}"
         method="POST"
         enctype="multipart/form-data"
         class="bg-white p-6 rounded-lg shadow w-full max-w-md"
@@ -39,9 +46,56 @@
             name="email"
             placeholder="Email"
             class="w-full mb-4 p-2 border rounded"
-            value="{{ old('email', $student->email ?? '') }}"
+            value="{{ old('email', $student->user->email ?? '') }}"
         />
 
+        @if (!isset($student))
+            <input
+                type="password"
+                name="password"
+                placeholder="password"
+                class="w-full mb-2 p-2 border rounded"
+            />
+            @error ('password')
+                <div class="text-red-500 mb-2">{{ $message }}</div>
+            @enderror
+        @endif
+
+        {{-- Phone --}}
+        <input
+            type="text"
+            name="phone"
+            placeholder="Phone"
+            class="w-full mb-2 p-2 border rounded"
+            value="{{ old('phone', $student->phone ?? '') }}"
+        />
+        @error ('phone')
+            <div class="text-red-500 mb-2">{{ $message }}</div>
+        @enderror
+
+        {{-- address --}}
+        <input
+            type="text"
+            name="address"
+            placeholder="Address"
+            class="w-full mb-2 p-2 border rounded"
+            value="{{ old('address', $student->address ?? '') }}"
+        />
+        @error ('address')
+            <div class="text-red-500 mb-2">{{ $message }}</div>
+        @enderror
+
+         <input
+            type="text"
+            name="roll_no"
+            placeholder="Roll_no"
+            class="w-full mb-2 p-2 border rounded"
+            value="{{ old('roll_no', $student->roll_no ?? '') }}"
+        />
+        @error ('roll_no')
+            <div class="text-red-500 mb-2">{{ $message }}</div>
+        @enderror
+        
         @error ('classroom_id')
             <div style="color: red">{{ $message }}</div>
         @enderror
