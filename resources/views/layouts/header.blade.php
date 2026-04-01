@@ -10,9 +10,9 @@
 <div class="flex items-center gap-3 fixed right-6">
     <div class="relative">
         <button id="profileBtn" class="cursor-pointer">
-            @if (auth()->user()->image)
+            @if (auth()->user()->admin->image)
                 <img
-                    src="{{ asset('storage/' . auth()->user()->image) }}"
+                    src="{{ asset('storage/' . auth()->user()->admin->image) }}"
                     class="rounded-full size-10"
                     alt="profile-pic"
                 />
@@ -30,29 +30,29 @@
             class="hidden absolute right-0 size-80 bg-slate-100 rounded-lg shadow-lg z-50 p-5"
         >
             <div class="flex flex-col justify-center items-center gap-5">
-                @if (auth()->user()->image)
+                @if (auth()->user()->admin->image)
                     <img
-                        src="{{ asset('storage/' . auth()->user()->image) }}"
-                        class="rounded-full size-25"
+                        src="{{ asset('storage/' . auth()->user()->admin->image) }}"
+                        class="rounded-full size-24"
                         alt="profile-pic"
                     />
                 @else
                     <img
                         src="{{ asset('images/user.png') }}"
-                        class="rounded-full size-25 bg-blue-200"
+                        class="rounded-full size-24 bg-blue-200"
                         alt="profile-pic"
                     />
                 @endif
                 <div class="flex flex-col justify-center items-center gap-2">
                     <p class="text-sm text-gray-500">{{ auth()->user()->email }}</p>
                     <h1 class="font-semibold text-3xl">
-                        Hi, {{ auth()->user()->name ?  auth()->user()->name : explode('@', auth()->user()->email)[0]}}!
+                        Hi, {{ auth()->user()->admin->name ?  auth()->user()->admin->name : explode('@', auth()->user()->email)[0]}}!
                     </h1>
                 </div>
                 <div class="flex gap-3 items-center justify-center">
                     <form
                         method="GET"
-                        {{-- action="{{ route('user.edit',  auth()->user()->id) }}" --}}
+                        action="{{ route('profile.edit')}}"
                     >
                         @csrf
                         <button
@@ -82,7 +82,7 @@
     </div>
     <div class="flex justify-center items-center gap-3">
         <span class="text-sm text-gray-500"
-            >Hi, {{ auth()->user()->name ?  auth()->user()->name : explode('@', auth()->user()->email)[0]}}!</span
+            >Hi, {{ auth()->user()->admin->name ?  auth()->user()->admin->name : explode('@', auth()->user()->email)[0]}}!</span
         >
         <form method="POST" action="{{ route('logout') }}">
             @csrf
