@@ -34,10 +34,10 @@ class ClassroomController extends Controller
 
     public function create()
     {
-        $course = $this->courseService->getAllCourses();
+        $courses = $this->courseService->getAllCourses();
         $departments = $this->departmentService->getAllDepartments();
 
-        return view('classroom.form', compact('departments', 'course'));
+        return view('classroom.form', compact('departments', 'courses'));
     }
 
     public function data(Request $request)
@@ -83,9 +83,9 @@ class ClassroomController extends Controller
     {
         $classroom = Classroom::findOrFail($id);
         $departments = $this->departmentService->getAllDepartments();
-        $course = $this->courseService->getAllCourses();
+        $courses = $this->courseService->getAllCourses();
 
-        return view('course.form', compact('classroom', 'course', 'departments'));
+        return view('classroom.form', compact('classroom', 'courses', 'departments'));
     }
 
     public function update(StoreClassroomRequest $request, $id)
