@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
-use App\Models\Admin;
 use App\Models\Role;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -20,39 +19,39 @@ class ProfileController extends Controller
     {
         return view('profile.index', [
             'user' => $request->user(),
-             'admin' => $request->user()->admin,
+            'admin' => $request->user()->admin,
         ]);
     }
 
     /**
      * Update the user's profile information.
      */
-   public function update(ProfileUpdateRequest $request): RedirectResponse
-{
-    $user = $request->user();
+    public function update(ProfileUpdateRequest $request): RedirectResponse
+    {
+        $user = $request->user();
 
-    $user->fill($request->validated());
+        $user->fill($request->validated());
 
-    if ($user->isDirty('email')) {
-        $user->email_verified_at = null;
-    }
-
-    $user->save();
-
-    if ($user->role_id === Role::ADMIN && $user->admin) {
-         if ($request->hasFile('image')) {
-            $image = $request->file('image')->store('admins', 'public');
+        if ($user->isDirty('email')) {
+            $user->email_verified_at = null;
         }
-        $user->admin->update([
-            'name' => $request->name,
-            'image'=>$image,
-            'phone'=>$request->phone,
-             'address'=>$request->address,
-        ]);
-    }
 
-    return Redirect::route('profile.edit')->with('status', 'profile-updated');
-}
+        $user->save();
+
+        if ($user->role_id === Role::ADMIN && $user->admin) {
+            if ($request->hasFile('image')) {
+                $image = $request->file('image')->store('admins', 'public');
+            }
+            $user->admin->update([
+                'name' => $request->name,
+                'image' => $image,
+                'phone' => $request->phone,
+                'address' => $request->address,
+            ]);
+        }
+
+        return Redirect::route('profile.edit')->with('status', 'profile-updated');
+    }
 
     /**
      * Delete the user's account.
