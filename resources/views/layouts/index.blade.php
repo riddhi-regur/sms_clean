@@ -21,13 +21,13 @@
     <section class="pl-72">
         <!-- Topbar -->
         <header
-            class="bg-white shadow-2xs w-full p-1 flex items-center fixed"
+            class="bg-white shadow-2xs w-full p-1 flex items-center fixed z-[1000]"
         >
             @include ('layouts.header')
         </header>
 
         <main class="px-3 flex flex-col gap-3 py-20">
-             @include ('layouts.dashboard')
+            @yield('content') 
         </main>
     </section>
 </body>

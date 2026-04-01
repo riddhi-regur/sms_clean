@@ -1,3 +1,6 @@
+@extends ('layouts.index')
+
+@section ('content')
 <div class="flex justify-between items-center">
     <h1 class="text-2xl font-semibold">Department</h1>
 @if(session('success'))
@@ -57,3 +60,4 @@ $(function () {
 </script>
 
 </div>
+@endsection

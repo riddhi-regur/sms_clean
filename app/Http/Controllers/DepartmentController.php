@@ -21,7 +21,7 @@ class DepartmentController extends Controller
     {
         $department = $this->departmentService->getAllDepartments();
 
-        return view('department.index', compact('department'));
+        return view('department.department-list', compact('department'));
     }
 
     public function create()

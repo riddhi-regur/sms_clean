@@ -18,6 +18,6 @@ class LayoutController extends Controller
     {
         $course = $this->courseService->getAllCourses();
 
-        return view('layouts.index', compact('course'));
+        return view('layouts.dashboard', compact('course'));
     }
 }

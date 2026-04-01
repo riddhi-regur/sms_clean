@@ -29,7 +29,7 @@ class ClassroomController extends Controller
     {
         $classroom = $this->classroomService->getAllClassrooms();
 
-        return view('classroom.index', compact('classroom'));
+        return view('classroom.classroom-list', compact('classroom'));
     }
 
     public function create()

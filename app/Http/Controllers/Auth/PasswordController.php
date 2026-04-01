@@ -26,4 +26,9 @@ class PasswordController extends Controller
 
         return back()->with('status', 'password-updated');
     }
+
+    public function edit()
+    {
+        return view('profile.update-password-form');
+    }
 }

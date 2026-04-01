@@ -1,34 +1,7 @@
-{{-- <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Profile') }}
-        </h2>
-    </x-slot>
+   @extends ('layouts.index')
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
-            <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
-                <div class="max-w-xl">
-                    @include('profile.partials.update-profile-information-form')
-                </div>
-            </div>
-
-             <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
-                <div class="max-w-xl">
-                    @include('profile.partials.update-password-form')
-                </div>
-            </div>
-
-            <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
-                <div class="max-w-xl">
-                    @include('profile.partials.delete-user-form')
-                </div>
-            </div> 
-        </div>
-    </div>
-</x-app-layout> --}}
-
-    <h1 class="text-2xl font-semibold mb-6">
+@section ('content')
+ <h1 class="text-2xl font-semibold mb-6">
         {{ isset($user) ? 'Edit Profile' : 'Add Profile' }}
     </h1>
     @if ($errors->any())
@@ -109,22 +82,6 @@
             <div class="text-red-500 mb-2">{{ $message }}</div>
         @enderror
 
-        {{-- Role --}}
-        {{-- <select name="role_id" id="role" class="w-full mb-2 p-2 border rounded">
-            <option value="">Select Role</option>
-            @foreach ($roles as $role)
-                <option
-                    value="{{ $role->id }}"
-                    {{ old('role_id', $user->role_id ?? '') == $role->id ? 'selected' : '' }}
-                >
-                    {{ ucfirst($role->name) }}
-                </option>
-            @endforeach
-        </select>
-        @error ('role_id')
-            <div class="text-red-500 mb-2">{{ $message }}</div>
-        @enderror --}}
-
         {{-- Image --}}
         <input
             type="file"
@@ -142,5 +99,5 @@
             {{ isset($user) ? 'Update' : 'Create' }}
         </button>
     </form>
-
+@endsection
 

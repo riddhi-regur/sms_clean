@@ -1,4 +1,6 @@
+@extends ('layouts.index')
 
+@section ('content')
     <div class="flex justify-center gap-2.5">
         <div
             class="bg-white flex justify-center items-center flex-1 flex-col p-5 rounded-xl shadow-lg"
@@ -33,5 +35,5 @@
         @include ('faculty.faculty-list') --}}
         @include ('course.course-list')
     </div>
-
+@endsection
 

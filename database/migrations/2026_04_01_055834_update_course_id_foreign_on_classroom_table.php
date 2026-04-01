@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('classrooms', function (Blueprint $table) {
-             // drop existing foreign key
+            // drop existing foreign key
             $table->dropForeign(['department_id']);
             $table->dropForeign(['course_id']);
 
@@ -21,7 +21,7 @@ return new class extends Migration
                 ->references('id')->on('departments')
                 ->onDelete('restrict');
 
-                 $table->foreign('course_id')
+            $table->foreign('course_id')
                 ->references('id')->on('courses')
                 ->onDelete('restrict');
         });
@@ -39,7 +39,7 @@ return new class extends Migration
             $table->foreign('department_id')
                 ->references('id')->on('departments')
                 ->onDelete('cascade');
-                 $table->foreign('course_id')
+            $table->foreign('course_id')
                 ->references('id')->on('courses')
                 ->onDelete('cascade');
         });
