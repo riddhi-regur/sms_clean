@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreDepartmentRequest;
 use App\Models\Department;
 use App\Services\DepartmentService;
-use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
 
@@ -81,7 +80,7 @@ class DepartmentController extends Controller
 
     public function destroy($id)
     {
-       try {
+        try {
             $this->departmentService->deleteDepartment($id);
 
             return redirect()

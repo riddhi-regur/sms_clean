@@ -12,14 +12,14 @@ use Yajra\DataTables\Facades\DataTables;
 class CourseController extends Controller
 {
     protected $courseService;
+
     protected $departmentService;
 
     public function __construct(CourseService $courseService, DepartmentService $departmentService)
     {
         $this->courseService = $courseService;
-         $this->departmentService = $departmentService;
+        $this->departmentService = $departmentService;
     }
-     
 
     public function index(Request $request)
     {
@@ -27,10 +27,12 @@ class CourseController extends Controller
 
         return view('course.index', compact('course'));
     }
-     public function create()
+
+    public function create()
     {
         $departments = $this->departmentService->getAllDepartments();
-         return view('course.form', compact('departments'));
+
+        return view('course.form', compact('departments'));
     }
 
     public function data(Request $request)
@@ -61,18 +63,20 @@ class CourseController extends Controller
             ->addIndexColumn()
             ->make(true);
     }
-     public function store(StoreCourseRequest $request)
+
+    public function store(StoreCourseRequest $request)
     {
         $this->courseService->createCourse($request->validated());
 
         return redirect('/course')->with('success', 'course added successfully!');
     }
-     public function edit($id)
+
+    public function edit($id)
     {
         $course = Course::findOrFail($id);
         $departments = $this->departmentService->getAllDepartments();
 
-        return view('course.form', compact('course','departments'));
+        return view('course.form', compact('course', 'departments'));
     }
 
     public function update(StoreCourseRequest $request, $id)
@@ -85,12 +89,14 @@ class CourseController extends Controller
     }
 
     public function destroy($id)
-    {  try {
-        $this->courseService->deleteCourse($id);
+    {
+        try {
+            $this->courseService->deleteCourse($id);
 
-        return redirect()
-            ->route('course.index')
-            ->with('success', 'Deleted successfully'); } catch (\Exception $e) {
+            return redirect()
+                ->route('course.index')
+                ->with('success', 'Deleted successfully');
+        } catch (\Exception $e) {
             return redirect()
                 ->route('course.index')
                 ->with('error', $e->getMessage());

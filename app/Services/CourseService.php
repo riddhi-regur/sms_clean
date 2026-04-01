@@ -15,22 +15,24 @@ class CourseService
 
         return $course;
     }
-     public function createCourse(array $data)
+
+    public function createCourse(array $data)
     {
         $course = new Course;
 
         $course->name = $data['name'];
         $course->code = $data['code'];
         $course->description = $data['description'];
-         $course->fees = $data['fees'] ?? null;
-          $course->duration = $data['duration'];
-           $course->department_id = $data['department_id'];
+        $course->fees = $data['fees'] ?? null;
+        $course->duration = $data['duration'];
+        $course->department_id = $data['department_id'];
 
         $course->save();
 
         return $course;
     }
-     public function updateCourse($id, $data)
+
+    public function updateCourse($id, $data)
     {
         $course = Course::findOrFail($id);
 
@@ -41,11 +43,13 @@ class CourseService
 
     public function deleteCourse($id)
     {
-        try{ $course = Course::findOrFail($id);
+        try {
+            $course = Course::findOrFail($id);
 
-        $course->delete();}catch(QueryException $e){
+            $course->delete();
+        } catch (QueryException $e) {
             // Foreign key restrict error
-            throw new \Exception("Cannot delete this course because it has assigned.");
+            throw new \Exception('Cannot delete this course because it has assigned.');
         } catch (\Exception $e) {
             throw new \Exception($e->getMessage());
         }

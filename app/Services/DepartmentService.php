@@ -36,12 +36,12 @@ class DepartmentService
 
     public function deleteDepartment($id)
     {
-       try {
+        try {
             $department = Department::findOrFail($id);
             $department->delete();
         } catch (QueryException $e) {
             // Foreign key restrict error
-            throw new \Exception("Cannot delete this department because it has assigned courses.");
+            throw new \Exception('Cannot delete this department because it has assigned courses.');
         } catch (\Exception $e) {
             throw new \Exception($e->getMessage());
         }

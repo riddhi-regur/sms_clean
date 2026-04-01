@@ -12,13 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('courses', function (Blueprint $table) {
-              // drop existing foreign key
+            // drop existing foreign key
             $table->dropForeign(['department_id']);
 
             // add new foreign key with restrict on delete
             $table->foreign('department_id')
-                  ->references('id')->on('departments')
-                  ->onDelete('restrict');
+                ->references('id')->on('departments')
+                ->onDelete('restrict');
         });
     }
 
@@ -28,11 +28,11 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('courses', function (Blueprint $table) {
-             $table->dropForeign(['department_id']);
+            $table->dropForeign(['department_id']);
             // restore previous behavior (if it was cascade)
             $table->foreign('department_id')
-                  ->references('id')->on('departments')
-                  ->onDelete('cascade');
+                ->references('id')->on('departments')
+                ->onDelete('cascade');
         });
     }
 };

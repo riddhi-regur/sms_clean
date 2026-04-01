@@ -13,14 +13,16 @@ use Yajra\DataTables\Facades\DataTables;
 class ClassroomController extends Controller
 {
     protected $classroomService;
+
     protected $courseService;
+
     protected $departmentService;
 
-    public function __construct(ClassroomService $classroomService,CourseService $courseService, DepartmentService $departmentService)
+    public function __construct(ClassroomService $classroomService, CourseService $courseService, DepartmentService $departmentService)
     {
         $this->classroomService = $classroomService;
         $this->courseService = $courseService;
-         $this->departmentService = $departmentService;
+        $this->departmentService = $departmentService;
     }
 
     public function index(Request $request)
@@ -29,11 +31,15 @@ class ClassroomController extends Controller
 
         return view('classroom.index', compact('classroom'));
     }
- public function create()
-    { $course = $this->courseService->getAllCourses();
+
+    public function create()
+    {
+        $course = $this->courseService->getAllCourses();
         $departments = $this->departmentService->getAllDepartments();
-         return view('classroom.form', compact('departments','course'));
+
+        return view('classroom.form', compact('departments', 'course'));
     }
+
     public function data(Request $request)
     {
         $query = $this->classroomService->getAllClassrooms();
@@ -65,21 +71,24 @@ class ClassroomController extends Controller
             ->addIndexColumn()
             ->make(true);
     }
-     public function store(StoreClassroomRequest $request)
+
+    public function store(StoreClassroomRequest $request)
     {
         $this->classroomService->createClassroom($request->validated());
 
         return redirect('/classroom')->with('success', 'classroom added successfully!');
     }
+
     public function edit($id)
     {
         $classroom = Classroom::findOrFail($id);
         $departments = $this->departmentService->getAllDepartments();
         $course = $this->courseService->getAllCourses();
 
-        return view('course.form', compact('classroom','course','departments'));
+        return view('course.form', compact('classroom', 'course', 'departments'));
     }
-     public function update(StoreClassroomRequest $request, $id)
+
+    public function update(StoreClassroomRequest $request, $id)
     {
         $this->classroomService->updateClassroom($id, $request->all());
 
@@ -87,13 +96,16 @@ class ClassroomController extends Controller
             ->route('classroom.index')
             ->with('success', 'Updated successfully');
     }
-     public function destroy($id)
-    {  try {
-        $this->classroomService->deleteClassroom($id);
 
-        return redirect()
-            ->route('classroom.index')
-            ->with('success', 'Deleted successfully'); } catch (\Exception $e) {
+    public function destroy($id)
+    {
+        try {
+            $this->classroomService->deleteClassroom($id);
+
+            return redirect()
+                ->route('classroom.index')
+                ->with('success', 'Deleted successfully');
+        } catch (\Exception $e) {
             return redirect()
                 ->route('classroom.index')
                 ->with('error', $e->getMessage());
