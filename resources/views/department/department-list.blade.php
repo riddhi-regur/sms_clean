@@ -35,28 +35,10 @@
         
 </table>
 
-<!-- Tailwind -->
-<script src="https://cdn.tailwindcss.com"></script>
-
-<!-- jQuery + DataTables -->
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
-<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-
 <script>
-$(function () {
-    $('#department-table').DataTable({
-        processing: true,
-        serverSide: true,
-        ajax: "{{ route('department.data') }}",
-        columns: [
-            { data: 'name', name: 'name' },
-            { data: 'code', name: 'code' },
-              { data: 'description', name: 'description' },
-                { data: 'action', name: 'action', orderable: false, searchable: false }
-        ]
-    });
-});
+    window.routes = {
+        departmentData: "{{ route('department.data') }}"
+    };
 </script>
 
 </div>
