@@ -17,13 +17,13 @@ class Department extends Model
         return $this->hasMany(Course::class);
     }
 
-    // public function faculties()
-    // {
-    //     return $this->hasMany(Faculty::class);
-    // }
+    public function faculties()
+    {
+        return $this->hasMany(Faculty::class);
+    }
 
-    // public function classrooms()
-    // {
-    //     return $this->hasMany(Classroom::class);
-    // }
+    public function classrooms()
+    {
+        return $this->hasMany(Classroom::class);
+    }
 }

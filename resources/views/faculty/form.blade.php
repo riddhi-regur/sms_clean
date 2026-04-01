@@ -2,6 +2,13 @@
 
 @section ('content')
     <h1 class="text-2xl font-semibold mb-6">Add Faculty</h1>
+     @if ($errors->any())
+    <div>
+        @foreach ($errors->all() as $error)
+            <p>{{ $error }}</p>
+        @endforeach
+    </div>
+@endif
     <form
         action="{{ isset($faculty) ? route('faculty.update', $faculty->id) : route('faculty.store') }}"
         method="POST"
@@ -38,8 +45,19 @@
             name="email"
             placeholder="Email"
             class="w-full mb-4 p-2 border rounded"
-            value="{{ old('email', $faculty->email ?? '') }}"
+            value="{{ old('email', $faculty->user->email ?? '') }}"
         />
+         @if (!isset($faculty))
+            <input
+                type="password"
+                name="password"
+                placeholder="password"
+                class="w-full mb-2 p-2 border rounded"
+            />
+            @error ('password')
+                <div class="text-red-500 mb-2">{{ $message }}</div>
+            @enderror
+        @endif
         @error ('phone')
             <p class="text-red-500 text-sm">{{ $message }}</p>
         @enderror
@@ -50,6 +68,16 @@
             class="w-full mb-4 p-2 border rounded"
             value="{{ old('phone', $faculty->phone ?? '') }}"
         />
+         <input
+            type="text"
+            name="address"
+            placeholder="Address"
+            class="w-full mb-2 p-2 border rounded"
+            value="{{ old('address', $faculty->address ?? '') }}"
+        />
+        @error ('address')
+            <div class="text-red-500 mb-2">{{ $message }}</div>
+        @enderror
         @error ('designation')
             <p class="text-red-500 text-sm">{{ $message }}</p>
         @enderror
@@ -59,26 +87,6 @@
             placeholder="Designation"
             class="w-full mb-4 p-2 border rounded"
             value="{{ old('designation', $faculty->designation ?? '') }}"
-        />
-        @error ('salary')
-            <p class="text-red-500 text-sm">{{ $message }}</p>
-        @enderror
-        <input
-            type="text"
-            name="salary"
-            placeholder="Salary"
-            class="w-full mb-4 p-2 border rounded"
-            value="{{ old('salary', $faculty->salary ?? '') }}"
-        />
-        @error ('joining_date')
-            <p class="text-red-500 text-sm">{{ $message }}</p>
-        @enderror
-        <input
-            type="text"
-            name="joining_date"
-            placeholder="Joining Date"
-            class="w-full mb-4 p-2 border rounded"
-            value="{{ old('joining_date', $faculty->joining_date ?? '') }}"
         />
         @error ('department_id')
             <div style="color: red">{{ $message }}</div>

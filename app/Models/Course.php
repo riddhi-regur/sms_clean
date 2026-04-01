@@ -20,13 +20,13 @@ class Course extends Model
         return $this->belongsTo(Department::class);
     }
 
-    // public function classrooms()
-    // {
-    //     return $this->hasMany(Classroom::class);
-    // }
+    public function classrooms()
+    {
+        return $this->hasMany(Classroom::class);
+    }
 
-    // public function students()
-    // {
-    //     return $this->hasMany(Student::class);
-    // }
+    public function students()
+    {
+        return $this->hasMany(Student::class);
+    }
 }

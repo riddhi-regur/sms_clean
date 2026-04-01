@@ -3,6 +3,7 @@
 use App\Http\Controllers\ClassroomController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\DepartmentController;
+use App\Http\Controllers\FacultyController;
 use App\Http\Controllers\LayoutController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StudentController;
@@ -27,6 +28,9 @@ Route::middleware(['auth', 'role:'.Role::ADMIN])->group(function () {
 
     Route::get('/student/data', [StudentController::class, 'data'])->name('student.data');
     Route::resource('student', StudentController::class);
+
+    Route::get('/faculty/data', [FacultyController::class, 'data'])->name('faculty.data');
+    Route::resource('faculty', FacultyController::class);
 });
 
 Route::middleware('auth')->group(function () {
