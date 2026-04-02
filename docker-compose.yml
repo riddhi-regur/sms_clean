@@ -1,0 +1,37 @@
+version: "3.8"
+services:
+  app:
+    build: .
+    volumes:
+      - .:/var/www
+    networks:
+      - laravel
+
+  db:
+    image: postgres:17.0
+    restart: always
+    environment:
+      POSTGRES_DB: student-management-app
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: Sql@123
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - laravel
+
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "8000:80"
+    volumes:
+      - .:/var/www
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+    networks:
+      - laravel
+
+networks:
+  laravel:
+    driver: bridge
+
+volumes:
+  pgdata:
