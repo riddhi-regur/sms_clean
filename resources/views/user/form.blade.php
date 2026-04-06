@@ -27,7 +27,7 @@
         {{-- Image Preview --}}
         @if (isset($user) && $user->image)
             <img
-                src="{{ asset('storage/' . $user->image) }}"
+                src="{{  $user->image }}"
                 width="100"
                 class="mb-3"
             />

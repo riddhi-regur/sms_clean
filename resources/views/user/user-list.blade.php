@@ -40,7 +40,7 @@
                     <td class="p-3">
                         @if ($user->image)
                             <img
-                                src="{{ asset('storage/' . $user->image) }}"
+                                src="{{  $user->image}}"
                                 class="mb-3 size-10"
                             />
                         @endif

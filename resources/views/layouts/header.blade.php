@@ -12,7 +12,7 @@
         <button id="profileBtn" class="cursor-pointer">
             @if (auth()->user()->admin->image)
                 <img
-                    src="{{ asset('storage/' . auth()->user()->admin->image) }}"
+                    src="{{  auth()->user()->admin->image }}"
                     class="rounded-full size-10"
                     alt="profile-pic"
                 />
@@ -32,7 +32,7 @@
             <div class="flex flex-col justify-center items-center gap-5">
                 @if (auth()->user()->admin->image)
                     <img
-                        src="{{ asset('storage/' . auth()->user()->admin->image) }}"
+                        src="{{auth()->user()->admin->image }}"
                         class="rounded-full size-24"
                         alt="profile-pic"
                     />

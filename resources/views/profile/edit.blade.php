@@ -27,7 +27,7 @@
         {{-- Image Preview --}}
         @if (isset($admin) && $admin->image)
             <img
-                src="{{ asset('storage/' . $admin->image) }}"
+                src="{{  $admin->image }}"
                 width="100"
                 class="mb-3"
             />

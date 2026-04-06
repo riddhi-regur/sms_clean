@@ -55,7 +55,7 @@ class FacultyController extends Controller
     ';
             })->addColumn('image', function ($row) {
                 if ($row->image) {
-                    return '<img src="'.asset('storage/'.$row->image).'" width="40" height="40" style="border-radius:100%;">';
+                    return '<img src="'.asset($row->image).'" width="40" height="40" style="border-radius:100%;">';
                 }
 
                 return '<img src="'.asset('images/user.png').'" width="40">';

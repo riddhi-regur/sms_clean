@@ -22,7 +22,7 @@
         @endif
         @if (isset($student) && $student->image)
             <img
-                src="{{ asset('storage/' . $student->image) }}"
+                src="{{ $student->image }}"
                 width="100"
                 class="mb-3"
             />

@@ -4,11 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
 use App\Models\Role;
+use Cloudinary\Api\Upload\UploadApi;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
+use Cloudinary\Configuration\Configuration;
 
 class ProfileController extends Controller
 {
@@ -40,7 +42,12 @@ class ProfileController extends Controller
 
         if ($user->role_id === Role::ADMIN && $user->admin) {
             if ($request->hasFile('image')) {
-                $image = $request->file('image')->store('admins', 'public');
+                 Configuration::instance();
+                  $upload = (new UploadApi())->upload($request->file('image')->getRealPath(), [
+            'folder' => 'admins',
+        ]);
+         $image = $upload['secure_url'];
+               // $image = $request->file('image')->store('admins', 'public');
             }
             $user->admin->update([
                 'name' => $request->name,
