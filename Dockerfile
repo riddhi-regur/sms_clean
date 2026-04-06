@@ -23,5 +23,7 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www
 
+COPY . /var/www
+
 # Ensure permissions for the 'hot' file and 'public' folder
 RUN chown -R www-data:www-data /var/www && chmod -R 775 /var/www
