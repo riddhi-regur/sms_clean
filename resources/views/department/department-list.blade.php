@@ -35,7 +35,7 @@
         
 </table>
 
-<script>
+<script type="module">
     window.routes = {
         departmentData: "{{ route('department.data') }}"
     };

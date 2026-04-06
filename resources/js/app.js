@@ -6,6 +6,13 @@ window.Alpine = Alpine;
 
 Alpine.start();
 
+import $ from "jquery";
+import DataTable from "datatables.net-dt";
+
+// Make them global so they are available in your Blade views
+window.$ = window.jQuery = $;
+window.DataTable = DataTable;
+
 document.addEventListener("DOMContentLoaded", () => {
     const profileBtn = document.getElementById("profileBtn");
     const dropdown = document.getElementById("profileDropdown");
