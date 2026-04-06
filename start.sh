@@ -5,3 +5,6 @@ php-fpm -D
 
 # Start Nginx in the foreground
 nginx -g "daemon off;"
+
+# Force create the symlink
+php artisan storage:link --force
