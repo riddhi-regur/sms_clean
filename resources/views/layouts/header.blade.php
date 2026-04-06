@@ -27,7 +27,7 @@
         <!-- Dropdown -->
         <div
             id="profileDropdown"
-            class="hidden absolute right-0 size-80 bg-slate-100 rounded-lg shadow-lg z-[9999] p-5"
+            class="hidden absolute right-0 size-80 bg-slate-100 rounded-lg shadow-lg p-5"
         >
             <div class="flex flex-col justify-center items-center gap-5">
                 @if (auth()->user()->admin->image)
