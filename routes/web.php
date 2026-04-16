@@ -13,6 +13,9 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('auth.login');
 });
+Route::get('/register', function () {
+    return view('auth.register');
+});
 
 Route::middleware(['auth', 'role:'.Role::ADMIN])->group(function () {
     Route::get('/dashboard', [LayoutController::class, 'index'])->name('dashboard');
