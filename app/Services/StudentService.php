@@ -6,10 +6,12 @@ use App\Models\Role;
 use App\Models\Student;
 use App\Models\User;
 use Cloudinary\Api\Upload\UploadApi;
+use Cloudinary\Configuration\Configuration;
+use Exception;
 use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
-use Cloudinary\Configuration\Configuration;
 
 class StudentService
 {
@@ -21,47 +23,64 @@ class StudentService
 
     public function createStudent(array $data)
     {
-        $user = new User;
-        $user->email = $data['email'];
-        $user->password = Hash::make($data['password']);
-        $user->role_id = Role::STUDENT;
-        $user->save();
+        DB::beginTransaction();
 
-        if (isset($data['image'])) {
-              Configuration::instance();
-                  $upload = (new UploadApi())->upload($data['image']->getRealPath(), [
-            'folder' => 'admins',
-        ]);
-         $image = $upload['secure_url'];
-            //$image = $data['image']->store('admins', 'public');
+        try {
+            $user = new User;
+            $user->email = $data['email'];
+            $user->password = Hash::make($data['password']);
+            $user->role_id = Role::STUDENT;
+            $user->save();
+
+            if (! $user->exists) {
+                throw new Exception('User was not persisted.');
+            }
+
+            $image = null;
+
+            if (isset($data['image'])) {
+                Configuration::instance();
+
+                $upload = (new UploadApi)->upload(
+                    $data['image']->getRealPath(),
+                    ['folder' => 'students']
+                );
+
+                $image = $upload['secure_url'];
+            }
+
+            $student = new Student;
+            $student->name = $data['name'];
+            $student->user_id = $user->id;
+            $student->phone = $data['phone'] ?? null;
+            $student->image = $image;
+            $student->address = $data['address'] ?? null;
+            $student->roll_no = $data['roll_no'] ?? null;
+            $student->course_id = $data['course_id'];
+            $student->classroom_id = $data['classroom_id'];
+
+            $student->save();
+
+            DB::commit();
+
+            return $student;
+
+        } catch (Exception $e) {
+            DB::rollBack();
+            throw new Exception('Failed to create student: '.$e->getMessage());
         }
-
-        $student = new Student;
-
-        $student->name = $data['name'];
-        $student->user_id = $user->id;
-        $student->phone = $data['phone'] ?? null;
-        $student->image = $image ?? null;
-        $student->address = $data['address'] ?? null;
-        $student->roll_no = $data['roll_no'] ?? null;
-        $student->course_id = $data['course_id'];
-        $student->classroom_id = $data['classroom_id'];
-
-        $student->save();
-
-        return $student;
     }
 
     public function updateStudent($id, $data)
     {
         $student = Student::findOrFail($id);
         if (isset($data['image'])) {
-             Configuration::instance();
-                  $upload = (new UploadApi())->upload($data['image']->getRealPath(), [
-            'folder' => 'admins',
-        ]);
-  
-            $data['image'] =  $upload['secure_url'];
+            Configuration::instance();
+            $upload = (new UploadApi)->upload($data['image']->getRealPath(), [
+                'folder' => 'admins',
+            ]);
+
+            $data['image'] = $upload['secure_url'];
         }
 
         $student->update($data);
@@ -91,9 +110,9 @@ class StudentService
             $student->delete();
         } catch (QueryException $e) {
             // Foreign key restrict error
-            throw new \Exception('Cannot delete this student because it has assigned.');
-        } catch (\Exception $e) {
-            throw new \Exception($e->getMessage());
+            throw new Exception('Cannot delete this student because it has assigned.');
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage());
         }
     }
 }

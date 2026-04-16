@@ -6,10 +6,10 @@ use App\Models\Faculty;
 use App\Models\Role;
 use App\Models\User;
 use Cloudinary\Api\Upload\UploadApi;
+use Cloudinary\Configuration\Configuration;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
-use Cloudinary\Configuration\Configuration;
 
 class FacultyService
 {
@@ -28,12 +28,12 @@ class FacultyService
         $user->save();
 
         if (isset($data['image'])) {
-             Configuration::instance();
-                  $upload = (new UploadApi())->upload($data['image']->getRealPath(), [
-            'folder' => 'admins',
-        ]);
-         $image = $upload['secure_url'];
-            //$image = $data['image']->store('admins', 'public');
+            Configuration::instance();
+            $upload = (new UploadApi)->upload($data['image']->getRealPath(), [
+                'folder' => 'admins',
+            ]);
+            $image = $upload['secure_url'];
+            // $image = $data['image']->store('admins', 'public');
         }
 
         $faculty = new Faculty;
@@ -55,13 +55,13 @@ class FacultyService
     {
         $faculty = Faculty::findOrFail($id);
         if (isset($data['image'])) {
-             Configuration::instance();
-                  $upload = (new UploadApi())->upload($data['image']->getRealPath(), [
-            'folder' => 'admins',
-        ]);
-  
-            $data['image'] =  $upload['secure_url'];
-            //$data['image'] = $data['image']->store('admins', 'public');
+            Configuration::instance();
+            $upload = (new UploadApi)->upload($data['image']->getRealPath(), [
+                'folder' => 'admins',
+            ]);
+
+            $data['image'] = $upload['secure_url'];
+            // $data['image'] = $data['image']->store('admins', 'public');
         }
 
         $faculty->update($data);
