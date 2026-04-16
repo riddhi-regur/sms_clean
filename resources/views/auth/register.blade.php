@@ -1,7 +1,17 @@
 <x-guest-layout>
     <form method="POST" action="{{ route('register') }}">
         @csrf
+@if(session('error'))
+    <div class="alert alert-danger">
+        {{ session('error') }}
+    </div>
+@endif
 
+@if(session('success'))
+    <div class="alert alert-success">
+        {{ session('success') }}
+    </div>
+@endif
         <!-- Name -->
         <div>
             <x-input-label for="name" :value="__('Name')" />
