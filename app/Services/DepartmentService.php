@@ -82,14 +82,31 @@ class DepartmentService
 
     public function deleteDepartment($id)
     {
+        DB::beginTransaction();
+
         try {
             $department = Department::findOrFail($id);
+
             $department->delete();
+
+            DB::commit();
+
+        } catch (ModelNotFoundException $e) {
+            DB::rollBack();
+
+            throw new \Exception('Department not found.');
         } catch (QueryException $e) {
-            // Foreign key restrict error
+            DB::rollBack();
+
+            Log::error('Department delete DB error: '.$e->getMessage());
+
             throw new \Exception('Cannot delete this department because it has assigned courses.');
-        } catch (\Exception $e) {
-            throw new \Exception($e->getMessage());
+        } catch (Throwable $e) {
+            DB::rollBack();
+
+            Log::error('Department delete failed: '.$e->getMessage());
+
+            throw new \Exception('Failed to delete department.');
         }
     }
 }
