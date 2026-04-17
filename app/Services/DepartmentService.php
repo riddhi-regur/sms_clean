@@ -4,6 +4,9 @@ namespace App\Services;
 
 use App\Models\Department;
 use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Throwable;
 
 class DepartmentService
 {
@@ -14,15 +17,34 @@ class DepartmentService
 
     public function createDepartment(array $data)
     {
-        $department = new Department;
+        DB::beginTransaction();
 
-        $department->name = $data['name'];
-        $department->code = $data['code'];
-        $department->description = $data['description'] ?? null;
+        try {
+            $department = new Department;
 
-        $department->save();
+            $department->name = $data['name'];
+            $department->code = $data['code'];
+            $department->description = $data['description'] ?? null;
 
-        return $department;
+            $department->save();
+
+            DB::commit();
+
+            return $department;
+
+        } catch (QueryException $e) {
+            DB::rollBack();
+
+            Log::error('Department DB error: '.$e->getMessage());
+
+            throw new \Exception('Department code already exists.');
+        } catch (Throwable $e) {
+            DB::rollBack();
+
+            Log::error('Department creation failed: '.$e->getMessage());
+
+            throw new \Exception('Failed to create department.');
+        }
     }
 
     public function updateDepartment($id, $data)
