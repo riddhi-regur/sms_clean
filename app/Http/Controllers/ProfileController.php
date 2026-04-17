@@ -6,9 +6,12 @@ use App\Http\Requests\ProfileUpdateRequest;
 use App\Models\Role;
 use Cloudinary\Api\Upload\UploadApi;
 use Cloudinary\Configuration\Configuration;
+use Exception;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
 
@@ -30,34 +33,57 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-        $user = $request->user();
+        DB::beginTransaction();
 
-        $user->fill($request->validated());
+        try {
+            $user = $request->user();
 
-        if ($user->isDirty('email')) {
-            $user->email_verified_at = null;
-        }
+            $user->fill($request->validated());
 
-        $user->save();
-
-        if ($user->role_id === Role::ADMIN && $user->admin) {
-            if ($request->hasFile('image')) {
-                Configuration::instance();
-                $upload = (new UploadApi)->upload($request->file('image')->getRealPath(), [
-                    'folder' => 'admins',
-                ]);
-                $image = $upload['secure_url'];
-                // $image = $request->file('image')->store('admins', 'public');
+            if ($user->isDirty('email')) {
+                $user->email_verified_at = null;
             }
-            $user->admin->update([
-                'name' => $request->name,
-                'image' => $image,
-                'phone' => $request->phone,
-                'address' => $request->address,
-            ]);
-        }
 
-        return Redirect::route('profile.edit')->with('status', 'profile-updated');
+            $user->save();
+
+            if ($user->role_id === Role::ADMIN && $user->admin) {
+
+                $image = $user->admin->image;
+
+                if ($request->hasFile('image')) {
+                    Configuration::instance();
+
+                    $upload = (new UploadApi)->upload(
+                        $request->file('image')->getRealPath(),
+                        ['folder' => 'admins']
+                    );
+
+                    $image = $upload['secure_url'];
+                }
+
+                $user->admin->update([
+                    'name' => $request->name,
+                    'image' => $image,
+                    'phone' => $request->phone,
+                    'address' => $request->address,
+                ]);
+            }
+
+            DB::commit();
+
+            return Redirect::route('profile.edit')
+                ->with('status', 'profile-updated');
+
+        } catch (Exception $e) {
+            DB::rollBack();
+
+            // Log actual error for debugging
+            Log::error('Profile update failed: '.$e->getMessage());
+
+            return Redirect::back()
+                ->with('error', 'Something went wrong while updating profile.')
+                ->withInput();
+        }
     }
 
     /**
