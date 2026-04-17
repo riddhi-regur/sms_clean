@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Department;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -49,11 +50,34 @@ class DepartmentService
 
     public function updateDepartment($id, $data)
     {
-        $department = Department::findOrFail($id);
+        DB::beginTransaction();
 
-        $department->update($data);
+        try {
+            $department = Department::findOrFail($id);
 
-        return $department;
+            $department->update($data);
+
+            DB::commit();
+
+            return $department;
+
+        } catch (ModelNotFoundException $e) {
+            DB::rollBack();
+
+            throw new \Exception('Department not found.');
+        } catch (QueryException $e) {
+            DB::rollBack();
+
+            Log::error('Department update DB error: '.$e->getMessage());
+
+            throw new \Exception('Department code already exists.');
+        } catch (Throwable $e) {
+            DB::rollBack();
+
+            Log::error('Department update failed: '.$e->getMessage());
+
+            throw new \Exception('Failed to update department.');
+        }
     }
 
     public function deleteDepartment($id)
