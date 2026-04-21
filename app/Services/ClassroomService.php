@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Classroom;
+use Exception;
 use Illuminate\Database\QueryException;
 
 class ClassroomService
@@ -18,17 +19,38 @@ class ClassroomService
 
     public function createClassroom(array $data)
     {
-        $classroom = new Classroom;
+        try {
+            $classroom = new Classroom;
 
-        $classroom->name = $data['name'];
-        $classroom->section = $data['section'];
-        $classroom->year = $data['year'];
-        $classroom->course_id = $data['course_id'];
-        $classroom->department_id = $data['department_id'];
+            $classroom->name = $data['name'];
+            $classroom->section = $data['section'];
+            $classroom->year = $data['year'];
+            $classroom->course_id = $data['course_id'];
+            $classroom->department_id = $data['department_id'];
 
-        $classroom->save();
+            $classroom->save();
 
-        return $classroom;
+            return $classroom;
+
+        } catch (QueryException $e) {
+
+            $errorCode = $e->errorInfo[0] ?? null;
+
+            // Duplicate classroom (example: unique constraint on name+section+year)
+            if ($errorCode === '23505' || $errorCode === '23000') {
+                throw new Exception('Classroom already exists for this section and year.');
+            }
+
+            // Foreign key: invalid course_id or department_id
+            if ($errorCode === '23503') {
+                throw new Exception('Invalid course or department selected.');
+            }
+
+            // Generic DB error
+            throw new Exception('Failed to create classroom due to database error.');
+        } catch (Exception $e) {
+            throw new Exception('Something went wrong while creating classroom.');
+        }
     }
 
     public function updateClassroom($id, $data)
@@ -48,9 +70,9 @@ class ClassroomService
             $classroom->delete();
         } catch (QueryException $e) {
             // Foreign key restrict error
-            throw new \Exception('Cannot delete this classroom because it has assigned.');
-        } catch (\Exception $e) {
-            throw new \Exception($e->getMessage());
+            throw new Exception('Cannot delete this classroom because it has assigned.');
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage());
         }
     }
 }
