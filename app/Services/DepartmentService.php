@@ -3,25 +3,31 @@
 namespace App\Services;
 
 use App\Models\Department;
+use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Throwable;
 
 class DepartmentService
 {
-    public function getAllDepartments()
+    protected Department $department;
+
+    public function __construct(Department $department)
     {
-        return Department::select(['id', 'name', 'code', 'description'])->get();
+        $this->department = $department;
     }
 
-    public function createDepartment(array $data)
+    public function getAllDepartments()
     {
-        DB::beginTransaction();
+        return $this->department->select(['id', 'name', 'code', 'description'])->get();
+    }
 
+    public function createDepartment(array $data): Department
+    {
         try {
-            $department = new Department;
+
+            $department = $this->department->newInstance();
 
             $department->name = $data['name'];
             $department->code = $data['code'];
@@ -29,84 +35,51 @@ class DepartmentService
 
             $department->save();
 
-            DB::commit();
-
             return $department;
-
         } catch (QueryException $e) {
-            DB::rollBack();
-
-            Log::error('Department DB error: '.$e->getMessage());
-
-            throw new \Exception('Department code already exists.');
+            Log::error("Department DB error: {$e->getMessage()}");
+            throw new Exception('Department code already exists.');
         } catch (Throwable $e) {
-            DB::rollBack();
-
-            Log::error('Department creation failed: '.$e->getMessage());
-
-            throw new \Exception('Failed to create department.');
+            Log::error("Department creation failed: {$e->getMessage()}");
+            throw new Exception('Failed to create department.');
         }
     }
 
-    public function updateDepartment($id, $data)
+    public function updateDepartment(int $id, array $data): Department
     {
-        DB::beginTransaction();
-
         try {
-            $department = Department::findOrFail($id);
+            $department = $this->department->findOrFail($id);
 
-            $department->update($data);
+            $department->name = $data['name'] ?? $department->name;
+            $department->code = $data['code'] ?? $department->code;
+            $department->description = $data['description'] ?? $department->description;
 
-            DB::commit();
+            $department->save();
 
             return $department;
-
         } catch (ModelNotFoundException $e) {
-            DB::rollBack();
-
-            throw new \Exception('Department not found.');
+            throw new Exception('Department not found.');
         } catch (QueryException $e) {
-            DB::rollBack();
-
-            Log::error('Department update DB error: '.$e->getMessage());
-
-            throw new \Exception('Department code already exists.');
+            Log::error("Department update DB error: {$e->getMessage()}");
+            throw new Exception('Department code already exists.');
         } catch (Throwable $e) {
-            DB::rollBack();
-
-            Log::error('Department update failed: '.$e->getMessage());
-
-            throw new \Exception('Failed to update department.');
+            Log::error("Department update failed: {$e->getMessage()}");
+            throw new Exception('Failed to update department.');
         }
     }
 
-    public function deleteDepartment($id)
+    public function deleteDepartment(int $id): bool
     {
-        DB::beginTransaction();
-
         try {
-            $department = Department::findOrFail($id);
-
-            $department->delete();
-
-            DB::commit();
-
+            return $this->department->findOrFail($id)->delete();
         } catch (ModelNotFoundException $e) {
-            DB::rollBack();
-
-            throw new \Exception('Department not found.');
+            throw new Exception('Department not found.');
         } catch (QueryException $e) {
-            DB::rollBack();
-
-            Log::error('Department delete DB error: '.$e->getMessage());
-
-            throw new \Exception('Cannot delete this department because it has assigned courses.');
+            Log::error("Department delete DB error: {$e->getMessage()}");
+            throw new Exception('Cannot delete this department because it is in use.');
         } catch (Throwable $e) {
-            DB::rollBack();
-
-            Log::error('Department delete failed: '.$e->getMessage());
-
-            throw new \Exception('Failed to delete department.');
+            Log::error("Department delete failed: {$e->getMessage()}");
+            throw new Exception('Failed to delete department.');
         }
     }
 }

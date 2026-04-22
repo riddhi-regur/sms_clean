@@ -9,10 +9,11 @@ use Tests\TestCase;
 class CourseServiceTest extends TestCase
 {
     protected function tearDown(): void
-{
-    \Mockery::close();
-    parent::tearDown();
-}
+    {
+        Mockery::close();
+        parent::tearDown();
+    }
+
     public function test_get_all_courses_success()
     {
         $mock = Mockery::mock('alias:'.Course::class);
@@ -29,8 +30,8 @@ class CourseServiceTest extends TestCase
     }
 
     /**
- * @runInSeparateProcess
- */
+     * @runInSeparateProcess
+     */
     public function test_create_course_success()
     {
         $data = [
@@ -42,7 +43,7 @@ class CourseServiceTest extends TestCase
             'fees' => 50000,
         ];
 
-        $mock = Mockery::mock('overload:'.Course::class)->makePartial();;
+        $mock = Mockery::mock('overload:'.Course::class)->makePartial();
         $mock->shouldReceive('save')->once()->andReturn(true);
 
         $service = new CourseService;
