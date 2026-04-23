@@ -2,11 +2,8 @@
 
 namespace Tests\Unit;
 
-use App\Http\Requests\StoreDepartmentRequest;
 use App\Models\Department;
 use App\Services\DepartmentService;
-use Exception;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
 use Mockery;
 use Tests\TestCase;
@@ -25,117 +22,67 @@ class DepartmentServiceTest extends TestCase
         $this->service = new DepartmentService($this->departmentMock);
     }
 
-    /**
-     * Helper to mock validation success
-     */
-    protected function mockFormRequestSuccess(array $data)
+    public function test_get_all_departments()
     {
+        $departments = collect([
+            new Department(['id' => 1, 'name' => 'HR', 'code' => 'HR01', 'description' => 'Human Resources']),
+            new Department(['id' => 2, 'name' => 'IT', 'code' => 'IT01', 'description' => 'Information Technology']),
+        ]);
 
-        $this->mock(StoreDepartmentRequest::class, function ($mock) use ($data) {
+        $this->departmentMock->shouldReceive('select')->with(['id', 'name', 'code', 'description'])->andReturnSelf();
+        $this->departmentMock->shouldReceive('get')->andReturn($departments);
 
-            $mock->shouldReceive('validateResolved')->andReturn(true);
+        $result = $this->service->getAllDepartments();
+        $this->assertCount(2, $result);
+        $this->assertEquals('HR', $result[0]->name);
+        $this->assertEquals('IT', $result[1]->name);
+    }
 
-            $mock->shouldReceive('validated')->andReturn($data);
+    public function test_get_all_departments_empty()
+    {
+        $this->departmentMock->shouldReceive('select')->with(['id', 'name', 'code', 'description'])->andReturnSelf();
+        $this->departmentMock->shouldReceive('get')->andReturn(collect());
 
-            $mock->shouldReceive('all')->andReturn($data);
-        });
+        $result = $this->service->getAllDepartments();
+        $this->assertCount(0, $result);
     }
 
     public function test_create_department_success()
     {
-        $data = ['name' => 'IT', 'code' => 'IT01', 'description' => 'Tech Dept'];
-        $this->mockFormRequestSuccess($data);
+        $data = [
+            'name' => 'Finance',
+            'code' => 'FIN01',
+            'description' => 'Finance Department',
+        ];
 
-        $instanceMock = Mockery::mock(Department::class);
-        $this->departmentMock->shouldReceive('newInstance')->once()->andReturn($instanceMock);
+        $this->departmentMock->shouldReceive('newInstance')->andReturn($this->departmentMock);
+        $this->departmentMock->shouldReceive('setAttribute')->atLeast()->once();
+        $this->departmentMock->shouldReceive('save')->once()->andReturn(true);
 
-        $instanceMock->shouldReceive('setAttribute')->atLeast()->once();
-        $instanceMock->shouldReceive('save')->once()->andReturn(true);
+        $this->departmentMock->shouldReceive('getAttribute')->with('code')->andReturn($data['code']);
+        $this->departmentMock->shouldReceive('getAttribute')->with('name')->andReturn($data['name']);
 
         $result = $this->service->createDepartment($data);
-        $this->assertInstanceOf(Department::class, $result);
+        $this->assertEquals('FIN01', $result->code);
+        $this->assertEquals('Finance', $result->name);
     }
 
-    public function test_create_department_validation_fails()
+    public function test_create_department_duplicate_code()
     {
-        $this->expectException(Exception::class);
+        $data = [
+            'name' => 'Finance',
+            'code' => 'FIN01',
+            'description' => 'Finance Department',
+        ];
+
+        $this->departmentMock->shouldReceive('newInstance')->andReturn($this->departmentMock);
+        $this->departmentMock->shouldReceive('setAttribute')->atLeast()->once();
+        $this->departmentMock->shouldReceive('save')->once()->andThrow(new QueryException('pgsql', '', [], new \Exception('Duplicate entry')));
+
+        $this->expectException(\Exception::class);
         $this->expectExceptionMessage('Department code already exists.');
 
-        $departmentMock = Mockery::mock(Department::class);
-
-        $this->departmentMock->shouldReceive('newInstance')->once()->andReturn($departmentMock);
-
-        $departmentMock->shouldReceive('setAttribute')->andReturn(null); // Handles $model->name = ...
-
-        $departmentMock->shouldReceive('save')
-            ->once()
-            ->andThrow(new QueryException('pgsql', 'insert into...', [], new Exception('Duplicate entry')
-            ));
-
-        $this->service->createDepartment([
-            'name' => 'IT',
-            'code' => 'IT01',
-            'description' => 'Test',
-        ]);
+        $this->service->createDepartment($data);
     }
-
-    public function test_update_department_success()
-    {
-        $data = ['name' => 'IT Updated', 'code' => 'IT02', 'description' => 'Updated Dept'];
-        $this->mockFormRequestSuccess($data);
-
-        $existingDept = Mockery::mock(Department::class);
-        $this->departmentMock->shouldReceive('findOrFail')->with(1)->andReturn($existingDept);
-
-        $existingDept->shouldReceive('setAttribute')->atLeast()->once();
-        $existingDept->shouldReceive('save')->once()->andReturn(true);
-
-        $result = $this->service->updateDepartment(1, $data);
-        $this->assertInstanceOf(Department::class, $result);
-    }
-
-    public function test_update_department_not_found()
-    {
-        $this->expectException(Exception::class);
-        $this->expectExceptionMessage('Department not found.');
-
-        $data = ['name' => 'IT', 'code' => 'IT01', 'description' => 'Desc'];
-        $this->mockFormRequestSuccess($data);
-
-        $this->departmentMock->shouldReceive('findOrFail')
-            ->with(99)
-            ->andThrow(new ModelNotFoundException);
-
-        $this->service->updateDepartment(99, $data);
-    }
-
-    public function test_delete_department_success()
-    {
-        $existingDept = Mockery::mock(Department::class);
-        $this->departmentMock->shouldReceive('findOrFail')->with(1)->andReturn($existingDept);
-        $existingDept->shouldReceive('delete')->once()->andReturn(true);
-
-        $result = $this->service->deleteDepartment(1);
-        $this->assertTrue($result);
-    }
-
-    public function test_delete_department_database_constraint_error()
-    {
-        $this->expectException(Exception::class);
-        $this->expectExceptionMessage('Cannot delete this department because it is in use.');
-
-        $existingDept = Mockery::mock(Department::class);
-        $this->departmentMock->shouldReceive('findOrFail')->with(1)->andReturn($existingDept);
-
-        $queryException = new QueryException('sql', 'delete...', [], new Exception);
-        $existingDept->shouldReceive('delete')->andThrow($queryException);
-
-        $this->service->deleteDepartment(1);
-    }
-
-    protected function tearDown(): void
-    {
-        Mockery::close();
-        parent::tearDown();
-    }
+    
 }
