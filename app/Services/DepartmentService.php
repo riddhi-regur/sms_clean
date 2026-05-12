@@ -76,7 +76,7 @@ class DepartmentService
             throw new Exception('Department not found.');
         } catch (QueryException $e) {
             Log::error("Department delete DB error: {$e->getMessage()}");
-            throw new Exception('Cannot delete this department because it is in use.');
+            throw new Exception('Cannot delete this department because it has assigned records.');
         } catch (Throwable $e) {
             Log::error("Department delete failed: {$e->getMessage()}");
             throw new Exception('Failed to delete department.');

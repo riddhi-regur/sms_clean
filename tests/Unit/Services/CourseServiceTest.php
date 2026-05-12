@@ -144,4 +144,65 @@ class CourseServiceTest extends TestCase
         $this->assertEquals('FIN01', $result->code);
         $this->assertEquals('Finance Course', $result->description);
     }
+    public function test_delete_course_successfully()
+    {
+        $course = Mockery::mock(Course::class);
+
+        $this->courseMock
+            ->shouldReceive('findOrFail')
+            ->once()
+            ->with(1)
+            ->andReturn($course);
+
+        $course
+            ->shouldReceive('delete')
+            ->once()
+            ->andReturn(true);
+
+        $this->service->deleteCourse(1);
+
+        $this->assertTrue(true); // no exception means success
+    }
+    public function test_delete_course_not_found()
+    {
+        $this->courseMock
+            ->shouldReceive('findOrFail')
+            ->once()
+            ->with(1)
+            ->andThrow(new ModelNotFoundException());
+
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('Course not found.');
+
+        $this->service->deleteCourse(1);
+    }
+    public function test_delete_course_with_assigned_records()
+    {
+        $course = Mockery::mock(Course::class);
+
+        $this->courseMock
+            ->shouldReceive('findOrFail')
+            ->once()
+            ->with(1)
+            ->andReturn($course);
+
+        $queryException = new QueryException(
+            'pgsql',
+            'Foreign key violation',
+            ['23503'],
+            new \Exception('Foreign key violation')
+        );
+
+        $course
+            ->shouldReceive('delete')
+            ->once()
+            ->andThrow($queryException);
+
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage(
+            'Cannot delete this course because it has assigned records.'
+        );
+
+        $this->service->deleteCourse(1);
+    }
 }

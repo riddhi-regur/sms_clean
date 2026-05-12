@@ -73,14 +73,7 @@ class CourseService
             throw new Exception('Course not found.');
         } catch (QueryException $e) {
 
-            $errorCode = $e->errorInfo[0] ?? null;
-
-            // Foreign key constraint (course is being used somewhere)
-            if ($errorCode === '23503' || $errorCode === '23000') {
-                throw new Exception('Cannot delete this course because it has assigned records.');
-            }
-
-            throw new Exception('Failed to delete course due to database error.');
+            throw new Exception('Cannot delete this course because it has assigned records.');
         } catch (Exception $e) {
             throw new Exception('Something went wrong while deleting course.');
         }

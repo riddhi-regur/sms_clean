@@ -163,4 +163,33 @@ class DepartmentServiceTest extends TestCase
 
         $this->service->deleteDepartment(1);
     }
+    public function test_delete_department_with_assigned_records()
+    {
+        $department = Mockery::mock(Department::class);
+
+        $this->departmentMock
+            ->shouldReceive('findOrFail')
+            ->once()
+            ->with(1)
+            ->andReturn($department);
+
+        $queryException = new QueryException(
+            'pgsql',
+            'Foreign key violation',
+            ['23503'],
+            new \Exception('Foreign key violation')
+        );
+
+        $department
+            ->shouldReceive('delete')
+            ->once()
+            ->andThrow($queryException);
+
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage(
+            'Cannot delete this department because it has assigned records.'
+        );
+
+        $this->service->deleteDepartment(1);
+    }
 }
