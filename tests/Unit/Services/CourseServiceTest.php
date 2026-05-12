@@ -2,6 +2,7 @@
 
 use App\Models\Course;
 use App\Services\CourseService;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
 use Tests\TestCase;
 
@@ -89,5 +90,58 @@ class CourseServiceTest extends TestCase
         $this->expectExceptionMessage('Course code already exists.');
 
         $this->service->createCourse($data);
+    }
+
+    public function test_update_course_not_found()
+    {
+        $this->courseMock
+            ->shouldReceive('findOrFail')
+            ->once()
+            ->with(1)
+            ->andThrow(new ModelNotFoundException());
+
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('Course not found.');
+
+        $this->service->updateCourse(1, []);
+    }
+
+    public function test_update_course_with_partial_data()
+    {
+        $course = new Course([
+            'name' => 'Finance',
+            'code' => 'FIN01',
+            'duration' => 1,
+            'department_id' => 1,
+            'fees' => 1000,
+            'description' => 'Finance Course',
+        ]);
+
+        $course = Mockery::mock($course)->makePartial();
+
+        $this->courseMock
+            ->shouldReceive('findOrFail')
+            ->once()
+            ->with(12)
+            ->andReturn($course);
+
+        $course
+            ->shouldReceive('update')
+            ->once()
+            ->with([
+                'name' => 'Updated Finance',
+            ])
+            ->andReturnUsing(function ($data) use ($course) {
+                $course->fill($data); // simulate Eloquent update
+                return true;
+            });
+
+        $result = $this->service->updateCourse(12, [
+            'name' => 'Updated Finance',
+        ]);
+
+        $this->assertEquals('Updated Finance', $result->name);
+        $this->assertEquals('FIN01', $result->code);
+        $this->assertEquals('Finance Course', $result->description);
     }
 }

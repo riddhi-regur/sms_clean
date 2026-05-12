@@ -57,20 +57,7 @@ class CourseService
         } catch (ModelNotFoundException $e) {
             throw new Exception('Course not found.');
         } catch (QueryException $e) {
-
-            $errorCode = $e->errorInfo[0] ?? null;
-
-            // Duplicate course code
-            if ($errorCode === '23505' || $errorCode === '23000') {
-                throw new Exception('Course code already exists.');
-            }
-
-            // Invalid foreign key (e.g., department_id)
-            if ($errorCode === '23503') {
-                throw new Exception('Invalid department selected.');
-            }
-
-            throw new Exception('Failed to update course due to database error.');
+            throw new Exception('Course code already exists.');
         } catch (Exception $e) {
             throw new Exception('Something went wrong while updating course.');
         }
