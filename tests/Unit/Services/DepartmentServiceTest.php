@@ -4,6 +4,7 @@ namespace Tests\Unit;
 
 use App\Models\Department;
 use App\Services\DepartmentService;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
 use Mockery;
 use Tests\TestCase;
@@ -84,5 +85,48 @@ class DepartmentServiceTest extends TestCase
 
         $this->service->createDepartment($data);
     }
-    
+
+    public function test_update_department_not_found()
+    {
+        $this->departmentMock
+            ->shouldReceive('findOrFail')
+            ->once()
+            ->with(1)
+            ->andThrow(new ModelNotFoundException());
+
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('Department not found.');
+
+        $this->service->updateDepartment(1, []);
+    }
+
+    public function test_update_department_with_partial_data()
+    {
+        $department = new Department([
+            'name' => 'Finance',
+            'code' => 'FIN01',
+            'description' => 'Finance Department',
+        ]);
+
+        $department = Mockery::mock($department)->makePartial();
+
+        $this->departmentMock
+            ->shouldReceive('findOrFail')
+            ->once()
+            ->with(12)
+            ->andReturn($department);
+
+        $department
+            ->shouldReceive('save')
+            ->once()
+            ->andReturn(true);
+
+        $result = $this->service->updateDepartment(12, [
+            'name' => 'Updated Finance',
+        ]);
+
+        $this->assertEquals('Updated Finance', $result->name);
+        $this->assertEquals('FIN01', $result->code);
+        $this->assertEquals('Finance Department', $result->description);
+    }
 }
