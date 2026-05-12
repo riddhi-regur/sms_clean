@@ -9,19 +9,24 @@ use Illuminate\Database\QueryException;
 
 class CourseService
 {
+    protected Course $course;
+
+    public function __construct(Course $course)
+    {
+        $this->course = $course;
+    }
+
     public function getAllCourses()
     {
-        $course = Course::select(['id', 'name', 'code', 'department_id', 'fees', 'duration', 'description'])
+        return $this->course->select(['id', 'name', 'code', 'department_id', 'fees', 'duration', 'description'])
             ->with('department:id,name')
             ->get();
-
-        return $course;
     }
 
     public function createCourse(array $data)
     {
         try {
-            $course = new Course;
+            $course = $this->course->newInstance();
 
             $course->name = $data['name'];
             $course->code = $data['code'];
@@ -33,24 +38,10 @@ class CourseService
             $course->save();
 
             return $course;
-
         } catch (QueryException $e) {
 
-            // PostgreSQL / MySQL duplicate entry error codes
-            $errorCode = $e->errorInfo[0] ?? null;
-
-            if ($errorCode === '23505' || $errorCode === '23000') {
-                throw new Exception('Course code already exists.');
-            }
-
-            // Foreign key constraint (invalid department_id)
-            if ($errorCode === '23503') {
-                throw new Exception('Invalid department selected.');
-            }
-
-            throw new Exception('Failed to create course due to database error.');
+            throw new Exception('Course code already exists.');
         } catch (Exception $e) {
-            dd($e->getMessage());
             throw new Exception('Something went wrong while creating course.');
         }
     }
@@ -58,12 +49,11 @@ class CourseService
     public function updateCourse($id, $data)
     {
         try {
-            $course = Course::findOrFail($id);
+            $course = $this->course->findOrFail($id);
 
             $course->update($data);
 
             return $course;
-
         } catch (ModelNotFoundException $e) {
             throw new Exception('Course not found.');
         } catch (QueryException $e) {
@@ -89,10 +79,9 @@ class CourseService
     public function deleteCourse($id)
     {
         try {
-            $course = Course::findOrFail($id);
+            $course = $this->course->findOrFail($id);
 
             $course->delete();
-
         } catch (ModelNotFoundException $e) {
             throw new Exception('Course not found.');
         } catch (QueryException $e) {
