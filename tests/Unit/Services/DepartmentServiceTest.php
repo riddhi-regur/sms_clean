@@ -129,4 +129,38 @@ class DepartmentServiceTest extends TestCase
         $this->assertEquals('FIN01', $result->code);
         $this->assertEquals('Finance Department', $result->description);
     }
+
+    public function test_delete_department_successfully()
+    {
+        $department = Mockery::mock(Department::class);
+
+        $this->departmentMock
+            ->shouldReceive('findOrFail')
+            ->once()
+            ->with(1)
+            ->andReturn($department);
+
+        $department
+            ->shouldReceive('delete')
+            ->once()
+            ->andReturn(true);
+
+        $result = $this->service->deleteDepartment(1);
+
+        $this->assertTrue($result);
+    }
+
+    public function test_delete_department_not_found()
+    {
+        $this->departmentMock
+            ->shouldReceive('findOrFail')
+            ->once()
+            ->with(1)
+            ->andThrow(new ModelNotFoundException());
+
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('Department not found.');
+
+        $this->service->deleteDepartment(1);
+    }
 }
